@@ -35,7 +35,7 @@ class _LoginState extends State<Login> {
     auth.signInWithEmailAndPassword(
         email: usuario.email,
         password: usuario.senha
-    ).then((firebaseUser){
+    ).onError((error, stackTrace) => error).then((firebaseUser){
       //Redireciona para tela principal
       Navigator.pushReplacementNamed(context, "/");
     });
