@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:olx/RouteGenerator.dart';
+import 'package:olx/views/Anuncios.dart';
 import 'package:olx/views/Login.dart';
 
 final ThemeData temaPadrao = ThemeData(
@@ -13,7 +14,7 @@ void main() async{
   await Firebase.initializeApp();
   runApp(MaterialApp(
     title: "OLX",
-    home: Login(),
+    home: Anuncios(),
     initialRoute: "/",
     onGenerateRoute: RouteGenerator.generateRoute,
     theme: temaPadrao,

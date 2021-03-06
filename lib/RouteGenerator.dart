@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:olx/views/Anuncios.dart';
+import 'package:olx/views/Login.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -10,7 +11,7 @@ class RouteGenerator {
       case "/":
         return MaterialPageRoute(builder: (_) => Anuncios());
       case "/login":
-        return MaterialPageRoute(builder: (_) => Anuncios());
+        return MaterialPageRoute(builder: (_) => Login());
       default:
         _erroRota();
     }
@@ -27,7 +28,7 @@ class RouteGenerator {
         body: Center(
           child: Text("Tela não encontrada"),
         ),
-      )
+      );
     });
     
   }

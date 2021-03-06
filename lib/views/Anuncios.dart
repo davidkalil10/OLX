@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Anuncios extends StatefulWidget {
@@ -6,11 +7,68 @@ class Anuncios extends StatefulWidget {
 }
 
 class _AnunciosState extends State<Anuncios> {
+  List<String> itensMenu = [];
+
+  _escolhaMenuItem(String itemEscolhido) {
+    switch (itemEscolhido) {
+      case "Meus anúncios":
+        Navigator.pushNamed(context, "/meus-anuncios");
+        break;
+      case "Entrar / Cadastrar":
+        Navigator.pushReplacementNamed(context, "/login");
+        break;
+      case "Deslogar":
+        _deslogarUsuario();
+        break;
+    }
+  }
+
+  _deslogarUsuario() async{
+    FirebaseAuth auth = FirebaseAuth.instance;
+    await auth.signOut();
+    Navigator.pushReplacementNamed(context, "/");
+  }
+
+  Future _verificarUsuarioLogado() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User usuarioLogado = await auth.currentUser;
+
+    if (usuarioLogado == null) {
+      itensMenu = ["Entrar / Cadastrar"];
+    } else {
+      itensMenu = ["Meus anúncios", "Deslogar"];
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _verificarUsuarioLogado();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Text("Anuncios"),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("OLX"),
+        elevation: 0,
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: _escolhaMenuItem,
+            itemBuilder: (context) {
+              return itensMenu.map((String item) {
+                return PopupMenuItem<String>(
+                  value: item,
+                  child: Text(item),
+                );
+              }).toList();
+            },
+          )
+        ],
+      ),
+      body: Container(
+        child: Text("Anúncios"),
+      ),
     );
   }
 }

@@ -26,7 +26,7 @@ class _LoginState extends State<Login> {
         password: usuario.senha
     ).then((firebaseUser){
       //Redireciona para tela principal
-
+        Navigator.pushReplacementNamed(context, "/");
     });
 
   }
@@ -37,7 +37,7 @@ class _LoginState extends State<Login> {
         password: usuario.senha
     ).then((firebaseUser){
       //Redireciona para tela principal
-
+      Navigator.pushReplacementNamed(context, "/");
     });
     
   }
