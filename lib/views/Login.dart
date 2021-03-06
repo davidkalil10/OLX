@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:olx/models/Usuario.dart';
 import 'package:olx/views/InputCustomizado.dart';
 
-class Home extends StatefulWidget {
+class Login extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _LoginState createState() => _LoginState();
 }
 
-class _HomeState extends State<Home> {
+class _LoginState extends State<Login> {
 
   TextEditingController _controllerEmail = TextEditingController(text: "dmmd10@hotmail.com");
   TextEditingController _controllerSenha = TextEditingController(text: "123456");
