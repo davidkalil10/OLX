@@ -25,6 +25,7 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
   String _itemSelecionadoCategoria;
   final _formKey = GlobalKey<FormState>();
   Anuncio _anuncio;
+  BuildContext _dialogContext;
 
   _selecionarImagemGalera() async {
     PickedFile imagemSelecionada =
@@ -37,11 +38,28 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
     }
   }
 
-  _abrirDialog(){
-
+  _abrirDialog(BuildContext context){
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context){
+          return AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 20,),
+                Text("Salvando anúncio..")
+              ],
+            ),
+          );
+        }
+    );
   }
 
   _salvarAnuncio() async {
+
+    _abrirDialog(_dialogContext);
     //Upload imagens no Storage
     await _uploadImagens();
     print("lista imagens: ${_anuncio.fotos.toString()}");
@@ -59,6 +77,9 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
       .collection("anuncios")
       .doc(_anuncio.id)
       .set(_anuncio.toMap()).then((_){
+        //Fechar a dialog
+        Navigator.pop(_dialogContext);
+        //Redirecionar para a tela meus anuncios
         Navigator.pushReplacementNamed(context, "/meus-anuncios");
     }
     );
@@ -393,6 +414,9 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                     if (_formKey.currentState.validate()) {
                       //Salva campos
                       _formKey.currentState.save();
+
+                      //Configura dialog context
+                      _dialogContext = context;
                       //Salva anuncio
                       _salvarAnuncio();
                     }
