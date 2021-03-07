@@ -17,7 +17,6 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
 
   final _controller = StreamController<QuerySnapshot>.broadcast();
   String _idUsuarioLogado;
-  Anuncio _anuncio;
 
   _recuperarDadosUsuarioLogado()async{
     //Recupera ID Usuário logado
@@ -56,6 +55,17 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
       .collection("anuncios")
       .doc(idAnuncio)
       .delete();
+
+    //Remoção arquivos pasta
+    FirebaseStorage storage = FirebaseStorage.instance;
+    Reference pastaRaiz = storage.ref().child("meus_anuncios").child(idAnuncio);
+    pastaRaiz.listAll().then((dir) => {
+      dir.items.forEach((fileRef) {
+        var refFile = storage.ref(pastaRaiz.fullPath);
+        var childRef = pastaRaiz.child(fileRef.name);
+        childRef.delete();
+      })
+    });
 
   }
 
@@ -141,7 +151,6 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
                                       ),
                                     ),
                                     onPressed: (){
-                                      _anuncio = anuncio;
                                       _removerAnuncio(anuncio.id);
                                       Navigator.of(context).pop();
                                     },
