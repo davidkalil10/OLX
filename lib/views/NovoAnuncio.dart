@@ -276,7 +276,7 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                       child: Padding(
                         padding: EdgeInsets.all(8),
                         child: DropdownButtonFormField(
-                          hint: Text("Região"),
+                          hint: Text("Região", style: TextStyle(color: Theme.of(context).primaryColor),),
                           onSaved: (estado) {
                             _anuncio.estado = estado;
                           },
@@ -302,7 +302,7 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                       child: Padding(
                         padding: EdgeInsets.all(8),
                         child: DropdownButtonFormField(
-                          hint: Text("Categorias"),
+                          hint: Text("Categorias", style: TextStyle(color: Theme.of(context).primaryColor),),
                           onSaved: (categoria) {
                             _anuncio.categoria = categoria;
                           },
