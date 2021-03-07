@@ -80,7 +80,7 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
         //Fechar a dialog
         Navigator.pop(_dialogContext);
         //Redirecionar para a tela meus anuncios
-        Navigator.pushReplacementNamed(context, "/meus-anuncios");
+        Navigator.pop(context);
     }
     );
   }
