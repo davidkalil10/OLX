@@ -1,11 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:olx/models/Anuncio.dart';
 
 class ItemAnuncio extends StatelessWidget {
+
+  Anuncio anuncio;
+  VoidCallback onTapItem;
+  VoidCallback onPressedRemover;
+
+  ItemAnuncio({
+    @required this.anuncio,
+    this.onTapItem,
+    this.onPressedRemover
+
+  });
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){},
+      onTap: this.onTapItem,
       child: Card(
         child: Padding(
           padding: EdgeInsets.all(12),
@@ -15,7 +28,10 @@ class ItemAnuncio extends StatelessWidget {
               SizedBox(
                 height: 120,
                 width: 120,
-                child: Container(color: Colors.orange,),
+                child: Image.network(
+                    anuncio.fotos[0],
+                    fit: BoxFit.cover,
+                ),
               ),
               //Título e preço
               Expanded(
@@ -23,31 +39,33 @@ class ItemAnuncio extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20,vertical: 8),
                   child: Column(
-                   // crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                         Text(
-                            "Nintendo Switch",
+                            this.anuncio.titulo,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold
                           ),
                         ),
-                        Text("R\$ 2.000,00")
+                        Text("R\$ ${this.anuncio.preco}")
                     ],
                   ),
                 ),
               ),
-              Expanded(
+              //Botão remover
+              //Exibir somente se há essa função
+              if(this.onPressedRemover != null ) Expanded(
                 flex: 1,
                 child: TextButton(
-                  onPressed: (){},
+                  onPressed: this.onPressedRemover,
                   child: Icon(Icons.delete, color: Colors.white,),
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.red
                   ),
                 ),
               )
-              //Botão remover
+
             ],
           ),
         ),

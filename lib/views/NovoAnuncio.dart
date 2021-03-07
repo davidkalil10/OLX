@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:olx/models/Anuncio.dart';
 import 'package:olx/views/widgets/BotaoCustomizado.dart';
 import 'package:olx/views/widgets/InputCustomizado.dart';
+import 'package:olx/views/widgets/ProgressPersonalizado.dart';
 import 'package:validadores/Validador.dart';
 
 class NovoAnuncio extends StatefulWidget {
@@ -44,13 +45,8 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
         barrierDismissible: false,
         builder: (BuildContext context){
           return AlertDialog(
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 20,),
-                Text("Salvando anúncio..")
-              ],
+            content: ProgressPersonalizado(
+              texto: "Salvando Anúncio...",
             ),
           );
         }
@@ -144,7 +140,7 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
   void initState() {
     super.initState();
     _carregarItensDropDown();
-    _anuncio = Anuncio();
+    _anuncio = Anuncio.gerarId();
   }
 
   @override
