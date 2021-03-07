@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:olx/models/Anuncio.dart';
+import 'package:olx/util/Configuracoes.dart';
 import 'package:olx/views/widgets/BotaoCustomizado.dart';
 import 'package:olx/views/widgets/InputCustomizado.dart';
 import 'package:olx/views/widgets/ProgressPersonalizado.dart';
@@ -39,22 +40,20 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
     }
   }
 
-  _abrirDialog(BuildContext context){
+  _abrirDialog(BuildContext context) {
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (BuildContext context){
+        builder: (BuildContext context) {
           return AlertDialog(
             content: ProgressPersonalizado(
               texto: "Salvando Anúncio...",
             ),
           );
-        }
-    );
+        });
   }
 
   _salvarAnuncio() async {
-
     _abrirDialog(_dialogContext);
     //Upload imagens no Storage
     await _uploadImagens();
@@ -68,72 +67,64 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
 
     //Salvar anuncio no Firestore
     FirebaseFirestore db = FirebaseFirestore.instance;
-    db.collection("meus_anuncios")
-      .doc(idUsuario)
-      .collection("anuncios")
-      .doc(_anuncio.id)
-      .set(_anuncio.toMap()).then((_){
+    db
+        .collection("meus_anuncios")
+        .doc(idUsuario)
+        .collection("anuncios")
+        .doc(_anuncio.id)
+        .set(_anuncio.toMap())
+        .then((_) {
+
+      //salvar anúncio público
+      db.collection("anuncios")
+          .doc(_anuncio.id)
+          .set(_anuncio.toMap()).then((_) {
         //Fechar a dialog
         Navigator.pop(_dialogContext);
         //Redirecionar para a tela meus anuncios
-        Navigator.pop(context);
-    }
-    );
+        Navigator.pop(context);});
+
+    });
   }
 
-  _extraiExtensao(String url){
+  _extraiExtensao(String url) {
     String extensao = url;
     //split string
     var arr = extensao.split('.');
-    print(arr[arr.length-1]);
-    return arr[arr.length-1];
+    print(arr[arr.length - 1]);
+    return arr[arr.length - 1];
   }
 
   Future _uploadImagens() async {
     FirebaseStorage storage = FirebaseStorage.instance;
     Reference pastaRaiz = storage.ref();
 
-    for(var imagem in _listaImagens){
-
+    for (var imagem in _listaImagens) {
       String nomeImagem = DateTime.now().millisecondsSinceEpoch.toString();
-      Reference arquivo = pastaRaiz
-          .child("meus_anuncios")
-          .child(_anuncio.id)
-          .child(nomeImagem);
+      Reference arquivo =
+          pastaRaiz.child("meus_anuncios").child(_anuncio.id).child(nomeImagem);
 
-      print("AQUI oh: "+imagem.path);
+      print("AQUI oh: " + imagem.path);
       String extensao = _extraiExtensao(imagem.path);
-      UploadTask uploadTask = arquivo.putFile(File(imagem.path),SettableMetadata(contentType: 'image/$extensao'));
+      UploadTask uploadTask = arquivo.putFile(
+          File(imagem.path), SettableMetadata(contentType: 'image/$extensao'));
 
       String url;
       await uploadTask.then((snapshot) async {
-       url = await snapshot.ref.getDownloadURL();
-      } );
+        url = await snapshot.ref.getDownloadURL();
+      });
 
       _anuncio.fotos.add(url);
-
     }
   }
 
   _carregarItensDropDown() {
     //Estados
-    for (var estado in Estados.listaEstadosSigla) {
-      _listaItensDropEstados
-          .add(DropdownMenuItem(child: Text(estado), value: estado));
-      print("Aqui: " + estado);
-    }
+    _listaItensDropEstados = Configuracoes().getEstados();
 
     //Categorias
-    _listaItensDropCategorias
-        .add(DropdownMenuItem(child: Text("Automóvel"), value: "auto"));
-    _listaItensDropCategorias
-        .add(DropdownMenuItem(child: Text("Imóvel"), value: "imovel"));
-    _listaItensDropCategorias
-        .add(DropdownMenuItem(child: Text("Eletrônicos"), value: "eletro"));
-    _listaItensDropCategorias
-        .add(DropdownMenuItem(child: Text("Moda"), value: "moda"));
-    _listaItensDropCategorias
-        .add(DropdownMenuItem(child: Text("Esportes"), value: "esportes"));
+    _listaItensDropCategorias = Configuracoes().getCategorias();
+
   }
 
   @override
@@ -285,12 +276,12 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                       child: Padding(
                         padding: EdgeInsets.all(8),
                         child: DropdownButtonFormField(
-                          hint: Text("Estados"),
+                          hint: Text("Região"),
                           onSaved: (estado) {
                             _anuncio.estado = estado;
                           },
                           value: _itemSelecionadoEstado,
-                          style: TextStyle(color: Colors.black, fontSize: 20),
+                          style: TextStyle( color: Colors.black,fontSize: 20),
                           items: _listaItensDropEstados,
                           validator: (valor) {
                             return Validador()

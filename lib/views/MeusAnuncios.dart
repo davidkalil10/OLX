@@ -14,11 +14,10 @@ class MeusAnuncios extends StatefulWidget {
 }
 
 class _MeusAnunciosState extends State<MeusAnuncios> {
-
   final _controller = StreamController<QuerySnapshot>.broadcast();
   String _idUsuarioLogado;
 
-  _recuperarDadosUsuarioLogado()async{
+  _recuperarDadosUsuarioLogado() async {
     //Recupera ID Usuário logado
     FirebaseAuth auth = FirebaseAuth.instance;
     User usuarioLogado = await auth.currentUser;
@@ -29,8 +28,7 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
   }
 
   //configurar no controller os dados do anúncio
-  Future<Stream<QuerySnapshot>> _adicionarListenerAnuncios() async{
-
+  Future<Stream<QuerySnapshot>> _adicionarListenerAnuncios() async {
     await _recuperarDadosUsuarioLogado();
 
     FirebaseFirestore db = FirebaseFirestore.instance;
@@ -43,30 +41,34 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
     stream.listen((dados) {
       _controller.add(dados);
     });
-
   }
 
-  _removerAnuncio(String idAnuncio){
-
+  _removerAnuncio(String idAnuncio) {
     //Remove Anuncio
     FirebaseFirestore db = FirebaseFirestore.instance;
-    db.collection("meus_anuncios")
-      .doc(_idUsuarioLogado)
-      .collection("anuncios")
-      .doc(idAnuncio)
-      .delete();
+    db
+        .collection("meus_anuncios")
+        .doc(_idUsuarioLogado)
+        .collection("anuncios")
+        .doc(idAnuncio)
+        .delete()
+        .then((_) {
+      //apagar anúncio públic
+      db.collection("anuncios").doc(idAnuncio).delete();
+    });
 
     //Remoção arquivos pasta
     FirebaseStorage storage = FirebaseStorage.instance;
     Reference pastaRaiz = storage.ref().child("meus_anuncios").child(idAnuncio);
     pastaRaiz.listAll().then((dir) => {
-      dir.items.forEach((fileRef) {
-        var refFile = storage.ref(pastaRaiz.fullPath);
-        var childRef = pastaRaiz.child(fileRef.name);
-        childRef.delete();
-      })
-    });
+          dir.items.forEach((fileRef) {
+            var refFile = storage.ref(pastaRaiz.fullPath);
+            var childRef = pastaRaiz.child(fileRef.name);
+            childRef.delete();
+          })
+        });
 
+    //Remover anúncio público
   }
 
   @override
@@ -77,7 +79,6 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
 
   @override
   Widget build(BuildContext context) {
-
     var carregandoDados = Center(
       child: ProgressPersonalizado(
         texto: "Carregando anúncios",
@@ -91,15 +92,14 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
       floatingActionButton: FloatingActionButton(
         foregroundColor: Colors.white,
         child: Icon(Icons.add),
-        onPressed: (){
+        onPressed: () {
           Navigator.pushNamed(context, "/novo-anuncio");
         },
       ),
       body: StreamBuilder(
         stream: _controller.stream,
-        builder: (context,snapshot){
-
-          switch(snapshot.connectionState){
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
             case ConnectionState.none:
             case ConnectionState.waiting:
               return carregandoDados;
@@ -107,62 +107,57 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
             case ConnectionState.active:
             case ConnectionState.done:
               //Exibe mensagem de erro caso haja
-              if(snapshot.hasError){
+              if (snapshot.hasError) {
                 return Text("Erro ao carregar os dados!");
               }
               QuerySnapshot querySnapshot = snapshot.data;
               return ListView.builder(
                   itemCount: querySnapshot.docs.length,
-                  itemBuilder: (_,index){
-
-                    List<DocumentSnapshot> anuncios = querySnapshot.docs.toList();
+                  itemBuilder: (_, index) {
+                    List<DocumentSnapshot> anuncios =
+                        querySnapshot.docs.toList();
                     DocumentSnapshot documentSnapshot = anuncios[index];
-                    Anuncio anuncio = Anuncio.fromDocumentSnapshot(documentSnapshot);
+                    Anuncio anuncio =
+                        Anuncio.fromDocumentSnapshot(documentSnapshot);
 
                     return ItemAnuncio(
                       anuncio: anuncio,
-                      onPressedRemover: (){
+                      onPressedRemover: () {
                         showDialog(
                             context: context,
-                            builder: (context){
+                            builder: (context) {
                               return AlertDialog(
                                 title: Text("Confirmar"),
-                                content: Text("Deseja realmente excluir o anúncio?"),
+                                content:
+                                    Text("Deseja realmente excluir o anúncio?"),
                                 actions: [
                                   TextButton(
                                     child: Text(
                                       "Cancelar",
-                                      style: TextStyle(
-                                      color: Colors.grey
-                                      ),
+                                      style: TextStyle(color: Colors.grey),
                                     ),
-                                    onPressed: (){
+                                    onPressed: () {
                                       Navigator.of(context).pop();
                                     },
                                   ),
                                   TextButton(
                                     style: TextButton.styleFrom(
-                                      backgroundColor: Colors.red
-                                    ),
+                                        backgroundColor: Colors.red),
                                     child: Text(
                                       "Remover",
-                                      style: TextStyle(
-                                          color: Colors.white
-                                      ),
+                                      style: TextStyle(color: Colors.white),
                                     ),
-                                    onPressed: (){
+                                    onPressed: () {
                                       _removerAnuncio(anuncio.id);
                                       Navigator.of(context).pop();
                                     },
                                   )
                                 ],
                               );
-                            }
-                        );
+                            });
                       },
                     );
-                  }
-              );
+                  });
           }
           return Container();
         },

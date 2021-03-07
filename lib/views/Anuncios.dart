@@ -67,7 +67,11 @@ class _AnunciosState extends State<Anuncios> {
         ],
       ),
       body: Container(
-        child: Text("Anúncios"),
+        child: Column(children: [
+          //Area de Filtros
+
+          //Area de listagem de anúncios
+        ],),
       ),
     );
   }
