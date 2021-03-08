@@ -31,7 +31,7 @@ class ItemAnuncio extends StatelessWidget {
                 width: 120,
                 child:
                 tag ? Image.network(anuncio.fotos[0],fit: BoxFit.cover)
-                     : Hero(child: Image.network(anuncio.fotos[0],fit: BoxFit.cover),tag: anuncio.fotos[0],),
+                     : Hero(child: Image.network(anuncio.fotos[0],fit: BoxFit.cover),tag: anuncio.fotos[0],transitionOnUserGestures: true,),
               ),
               //Título e preço
               Expanded(

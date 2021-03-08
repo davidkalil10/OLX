@@ -26,6 +26,7 @@ class _DetalhesAnuncioState extends State<DetalhesAnuncio> {
      // print("URL: $url");
       return Hero(
         tag: url,
+        transitionOnUserGestures: true,
         child: Container(
           height: 250,
           decoration: BoxDecoration(
