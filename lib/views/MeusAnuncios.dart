@@ -121,6 +121,7 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
                         Anuncio.fromDocumentSnapshot(documentSnapshot);
 
                     return ItemAnuncio(
+                      tag: index==0 ?true :false,
                       anuncio: anuncio,
                       onPressedRemover: () {
                         showDialog(

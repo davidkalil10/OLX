@@ -7,12 +7,13 @@ class ItemAnuncio extends StatelessWidget {
   Anuncio anuncio;
   VoidCallback onTapItem;
   VoidCallback onPressedRemover;
+  bool tag;
 
   ItemAnuncio({
     @required this.anuncio,
     this.onTapItem,
-    this.onPressedRemover
-
+    this.onPressedRemover,
+    this.tag = false
   });
 
   @override
@@ -28,10 +29,9 @@ class ItemAnuncio extends StatelessWidget {
               SizedBox(
                 height: 120,
                 width: 120,
-                child: Image.network(
-                    anuncio.fotos[0],
-                    fit: BoxFit.cover,
-                ),
+                child:
+                tag ? Image.network(anuncio.fotos[0],fit: BoxFit.cover)
+                     : Hero(child: Image.network(anuncio.fotos[0],fit: BoxFit.cover),tag: anuncio.fotos[0],),
               ),
               //Título e preço
               Expanded(

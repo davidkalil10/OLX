@@ -21,14 +21,19 @@ class _DetalhesAnuncioState extends State<DetalhesAnuncio> {
 
   List<Widget> _getListaImagens(){
     List<String> listaUrlImagens = _anuncio.fotos;
+   // print("tag: ${_anuncio.fotos[0]}");
     return listaUrlImagens.map((url){
-      return Container(
-        height: 250,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage(url),
-            fit: BoxFit.fitWidth
-          )
+     // print("URL: $url");
+      return Hero(
+        tag: url,
+        child: Container(
+          height: 250,
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: NetworkImage(url),
+                  fit: BoxFit.fitWidth
+              )
+          ),
         ),
       );
     }).toList();
