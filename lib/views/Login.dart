@@ -11,8 +11,8 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
 
-  TextEditingController _controllerEmail = TextEditingController(text: "dmmd10@hotmail.com");
-  TextEditingController _controllerSenha = TextEditingController(text: "123456");
+  TextEditingController _controllerEmail = TextEditingController();
+  TextEditingController _controllerSenha = TextEditingController();
 
 
   bool _cadastrar = false;
